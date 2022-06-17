@@ -1,0 +1,12 @@
+/home/leoamaro01/Documents/repos/AMProject/lib/bin/Debug/net6.0/lib.deps.json
+/home/leoamaro01/Documents/repos/AMProject/lib/bin/Debug/net6.0/lib.dll
+/home/leoamaro01/Documents/repos/AMProject/lib/bin/Debug/net6.0/lib.pdb
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.csproj.AssemblyReference.cache
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.GeneratedMSBuildEditorConfig.editorconfig
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.AssemblyInfoInputs.cache
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.AssemblyInfo.cs
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.csproj.CoreCompileInputs.cache
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.dll
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/refint/lib.dll
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/lib.pdb
+/home/leoamaro01/Documents/repos/AMProject/lib/obj/Debug/net6.0/ref/lib.dll
