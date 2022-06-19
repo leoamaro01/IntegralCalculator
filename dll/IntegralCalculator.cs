@@ -2,7 +2,7 @@
 
 namespace lib;
 public class IntegralCalculator
-{//borrar
+{
     public static decimal midpoint = 0.5m;
     public static int optimalDivisionsPerUnit = 100;
 
