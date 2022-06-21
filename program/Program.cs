@@ -6,7 +6,7 @@ namespace cnsle;
 
 public static class Program
 {
-    static string functionName = "e^x * sinx";
+    static string functionName = "e^(x) * sin(x)";
     static decimal Function(decimal input)
     {
         return (decimal)(SetExpression(input).Evaluate());
@@ -15,6 +15,7 @@ public static class Program
     }
     static void Main(string[] args)
     {
+        StartParsing(functionName);
         IntegralCalculator.optimalDivisionsPerUnit = 10000;
 
         decimal lower = decimal.Parse(Request("Limite inferior:"));
@@ -53,5 +54,13 @@ public static class Program
             ((x, y) => x * y)
         );
         return e;
+    }
+    static void StartParsing(string s)
+    {
+        Interpreter interpreter = new();
+        s = interpreter.Prepare(s);
+        var stringParsed = interpreter.Parse(s);
+        Console.WriteLine(stringParsed);
+
     }
 }
