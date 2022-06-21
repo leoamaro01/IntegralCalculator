@@ -123,14 +123,16 @@ public class Interpreter
         if (index != -1)
         {
             op = s[index].ToString();
-            return (DelParenthesis(s.Substring(0, index + 1)), DelParenthesis(s.Substring(index + 1, s.Length)));
+            string left = s[..(index)];
+            string right = s[(index + 1)..];
+            return (DelParenthesis(left), DelParenthesis(right));
         }
         else
         {
-            return GetBinaryExpressions(s, out op);
+            return GetAdvancedExpressions(s, out op);
         }
     }
-    private (string, string) GetBinaryExpressions(string s, out string op)
+    private (string, string) GetAdvancedExpressions(string s, out string op)
     {
         op = "";
         bool unary = false;
@@ -180,7 +182,7 @@ public class Interpreter
         }
         if (unary)
             return (DelParenthesis(s[(index + 1)..]), "");
-        return (DelParenthesis(s.Substring(0, index)), DelParenthesis(s.Substring(index + 1, s.Length - (index + 1))));
+        return (DelParenthesis(s[0..index]), DelParenthesis(s[(index + 1)..]));
     }
     private string DelParenthesis(string s)
     {
@@ -207,6 +209,7 @@ public class Interpreter
         }
         return s;
     }
+    #region Sustitution
     private string SearchParenthesis(string s)
     {
         string past = "";
@@ -247,4 +250,5 @@ public class Interpreter
         actualLetter++;
         return res;
     }
+    #endregion
 }

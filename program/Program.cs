@@ -15,7 +15,7 @@ public static class Program
     }
     static void Main(string[] args)
     {
-        StartParsing(functionName);
+        StartParsing("x*(3+2)");
         IntegralCalculator.optimalDivisionsPerUnit = 10000;
 
         decimal lower = decimal.Parse(Request("Limite inferior:"));
