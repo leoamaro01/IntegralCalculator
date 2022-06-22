@@ -1,195 +1,182 @@
-using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Linq;
 namespace lib;
 public class Interpreter
 {
-    private Dictionary<string, string> binaryOperators;
-    private Dictionary<string, string> unaryOperators;
+    static readonly Dictionary<string, string> binaryOperators;
+    static readonly Dictionary<string, string> unaryOperators;
 
-    private Dictionary<char, string> sustitutions;
-    private char actualLetter;
-
-    public Interpreter()
+    static Interpreter()
     {
-        sustitutions = new();
-        actualLetter = 'A';
-        unaryOperators = new();
-        binaryOperators = new();
-        binaryOperators.Add("+", "sum");
-        binaryOperators.Add("-", "sub");
-        binaryOperators.Add("*", "mult");
-        binaryOperators.Add("/", "div");
-        binaryOperators.Add("^", "pow");
-        binaryOperators.Add("log", "log");//It´s going to ask it´s base
-
-        unaryOperators.Add("ln", "ln");
-        unaryOperators.Add("sin", "sin");
-        unaryOperators.Add("cos", "cos");
-        unaryOperators.Add("tan", "tan");
-        unaryOperators.Add("cot", "cot");
-        unaryOperators.Add("sec", "sec");
-        unaryOperators.Add("csc", "csc");
-        unaryOperators.Add("arcsin", "arcsin");
-        unaryOperators.Add("arccos", "arccos");
-        unaryOperators.Add("arctan", "arctan");
-        unaryOperators.Add("arccot", "arccot");
+        binaryOperators = new()
+        {
+            { "+", "sum" },
+            { "-", "sub" },
+            { "*", "mult" },
+            { "/", "div" },
+            { "^", "pow" },
+            { "log", "log" }
+        };
+        unaryOperators = new()
+        {
+            { "ln", "ln" },
+            { "arcsin", "arcsin" },
+            { "arccos", "arccos" },
+            { "arctan", "arctan" },
+            { "arccot", "arccot" },
+            { "sin", "sin" },
+            { "cos", "cos" },
+            { "tan", "tan" },
+            { "cot", "cot" },
+            { "sec", "sec" },
+            { "csc", "csc" }
+        };
     }
+    List<string> substitutions = new();
     public string Prepare(string s)
     {
-        s = DelSpaces(s);
+        s = s.Replace(" ", "");
         s = SearchParenthesis(s);
         return s;
     }
-    private string DelSpaces(string s)
-    {
-        var deletedSpaces = s.Where((x) => (x != ' '));
-        if (deletedSpaces == null)
-            return "";
-        string res = "";
-        foreach (var c in deletedSpaces)
-        {
-            res += c;
-        }
-        return res;
-    }
     public string Parse(string s)
     {
+        //sum(sin(x+1), {5})
         s = GetParse(s);
-        string past = "";
-        string actual = s;
-        while (actual != past)
+
+        string[] subsArray = substitutions.ToArray();
+        for (int i = 0; i < subsArray.Length; i++)
         {
-            past = actual;
-            for (int i = 0; i < actual.Length; i++)
-            {
-                if (sustitutions.ContainsKey(actual[i]))
-                {
-                    var temp = GetParse(sustitutions[actual[i]]);
-                    actual = actual.Remove(i, 1);
-                    actual = actual.Insert(i, temp);
-                }
-            }
+            subsArray[i] = GetParse(subsArray[i]);
+
+            if (i != 0)
+                subsArray[i] = string.Format(subsArray[i], subsArray[..i]);
         }
-        return actual;
+
+        s = string.Format(s, subsArray);
+
+        substitutions.Clear();
+
+        return s;
     }
     private string GetParse(string s)
     {
         s = DelParenthesis(s);
         if (IsConstant(s))
-        {
             return s;
-        }
-        string op = "";
-        (string left, string right) = GetExpressions(s, out op);
-        if (right == "")
-            return $"{unaryOperators[op]}({GetParse(left)})";
-        return $"{binaryOperators[op]}({GetParse(left)},{GetParse(right)})";
-    }
-    private bool IsConstant(string s)
-    {
-        string op = "";
-        for (int i = 0; i < s.Length; i++)
-        {
-            if (s[i] > 'a' && s[i] < 'z')
-            {
-                op += s[i];
-                continue;
-            }
-            else
-            {
-                if (op != "")
-                {
-                    if (binaryOperators.ContainsKey(op) || unaryOperators.ContainsKey(op))
-                        return false;
-                }
-            }
-            op = s[i].ToString();
-            if (binaryOperators.ContainsKey(op) || unaryOperators.ContainsKey(op))
-                return false;
-            op = "";
-        }
-        return true;
-    }
-    private (string, string) GetExpressions(string s, out string op)
-    {
-        int index = -1;
-        for (int i = 0; i < s.Length; i++)
-        {
-            if (s[i] == '+' || s[i] == '-')
-            {
-                index = i;
-                break;
-            }
-        }
-        if (index != -1)
-        {
-            op = s[index].ToString();
-            string left = s[..(index)];
-            string right = s[(index + 1)..];
-            return (DelParenthesis(left), DelParenthesis(right));
-        }
-        else
-        {
-            return GetAdvancedExpressions(s, out op);
-        }
-    }
-    private (string, string) GetAdvancedExpressions(string s, out string op)
-    {
-        op = "";
-        bool unary = false;
-        int index = -1;
-        int opIndex = int.MaxValue;
-        string actualOp = "";
-        for (int i = 0; i < s.Length; i++)
-        {
-            actualOp = "";
-            if (s[i] > 'a' && s[i] < 'z')
-            {
 
-                for (int j = i; j < s.Length; j++)
-                {
-                    if (s[j] > 'a' && s[j] < 'z')
-                        actualOp += s[j];
-                    else
-                    {
-                        i = j - 1;
-                        break;
-                    }
-                }
-            }
-            else
-                actualOp = s[i].ToString();
-            if (binaryOperators.ContainsKey(actualOp))
+        (string lhs, string? rhs) = GetExpressions(s, out string op);
+
+        if (rhs == null)
+            return $"{unaryOperators[op]}({GetParse(lhs)})";
+
+        return $"{binaryOperators[op]}({GetParse(lhs)},{GetParse(rhs)})";
+    }
+    private static bool IsConstant(string s)
+        => binaryOperators.Keys.All(op => !s.Contains(op)) &&
+                unaryOperators.Keys.All(op => !s.Contains(op));
+    private static (string lhs, string? rhs) GetExpressions(string s, out string op)
+    {
+        foreach (var oper in binaryOperators.Keys)
+        {
+            int i = s.IndexOf(oper);
+            if (i >= 0)
             {
-                int newIndex = binaryOperators.Keys.ToList().IndexOf(actualOp);
-                if (newIndex < opIndex)
-                {
-                    op = actualOp;
-                    index = i;
-                    opIndex = newIndex;
-                }
-            }
-            if (unaryOperators.ContainsKey(actualOp) && op == "")
-            {
-                unary = true;
-                int newIndex = unaryOperators.Keys.ToList().IndexOf(actualOp);
-                if (newIndex < opIndex)
-                {
-                    op = actualOp;
-                    index = i;
-                    opIndex = newIndex;
-                }
+                op = oper;
+                return (s[..i], s[(i + 1)..]);
             }
         }
-        if (unary)
-            return (DelParenthesis(s[(index + 1)..]), "");
-        return (DelParenthesis(s[0..index]), DelParenthesis(s[(index + 1)..]));
-    }
-    private string DelParenthesis(string s)
-    {
-        if (s[0] == '(' && s[s.Length - 1] == ')')
+
+        foreach (var oper in unaryOperators.Keys)
         {
-            string temp = s;
-            temp = s[1..(s.Length - 1)];
+            if (s.Contains(oper))
+            {
+                op = oper;
+                return (s[oper.Length..], null);
+            }
+        }
+
+        throw new ArgumentException("Invalid expression");
+
+
+        // int index = -1;
+        // for (int i = 0; i < s.Length; i++)
+        // {
+        //     if (s[i] == '+' || s[i] == '-')
+        //     {
+        //         index = i;
+        //         break;
+        //     }
+        // }
+        // if (index != -1)
+        // {
+        //     op = s[index].ToString();
+        //     string left = s[..(index)];
+        //     string right = s[(index + 1)..];
+        //     return (DelParenthesis(left), DelParenthesis(right));
+        // }
+        // else
+        // {
+        //     return GetAdvancedExpressions(s, out op);
+        // }
+    }
+    // private (string, string) GetAdvancedExpressions(string s, out string op)
+    // {
+    //     op = "";
+    //     bool unary = false;
+    //     int index = -1;
+    //     int opIndex = int.MaxValue;
+    //     string actualOp = "";
+    //     for (int i = 0; i < s.Length; i++)
+    //     {
+    //         actualOp = "";
+    //         if (s[i] > 'a' && s[i] < 'z')
+    //         {
+
+    //             for (int j = i; j < s.Length; j++)
+    //             {
+    //                 if (s[j] > 'a' && s[j] < 'z')
+    //                     actualOp += s[j];
+    //                 else
+    //                 {
+    //                     i = j - 1;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         else
+    //             actualOp = s[i].ToString();
+    //         if (binaryOperators.ContainsKey(actualOp))
+    //         {
+    //             int newIndex = binaryOperators.Keys.ToList().IndexOf(actualOp);
+    //             if (newIndex < opIndex)
+    //             {
+    //                 op = actualOp;
+    //                 index = i;
+    //                 opIndex = newIndex;
+    //             }
+    //         }
+    //         if (unaryOperators.ContainsKey(actualOp) && op == "")
+    //         {
+    //             unary = true;
+    //             int newIndex = unaryOperators.Keys.ToList().IndexOf(actualOp);
+    //             if (newIndex < opIndex)
+    //             {
+    //                 op = actualOp;
+    //                 index = i;
+    //                 opIndex = newIndex;
+    //             }
+    //         }
+    //     }
+    //     if (unary)
+    //         return (DelParenthesis(s[(index + 1)..]), "");
+    //     return (DelParenthesis(s[0..index]), DelParenthesis(s[(index + 1)..]));
+    // }
+    private static string DelParenthesis(string s)
+    {
+        while (s[0] == '(' && s[^1] == ')')
+        {
+            string temp = s[1..^1];
             int count = 0;
             for (int i = 0; i < temp.Length; i++)
             {
@@ -205,50 +192,34 @@ public class Interpreter
             if (count != 0)
                 return s;
             else
-                return temp;
+                s = temp;
         }
         return s;
     }
-    #region Sustitution
     private string SearchParenthesis(string s)
     {
-        string past = "";
-        string actual = s;
-        while (actual != past)
+        string prev = "";
+        string curr = s;
+        while (curr != prev)
         {
             int from = -1;
-            int to = actual.Length;
-            for (int i = 0; i < actual.Length; i++)
+            int to = curr.Length;
+            for (int i = 0; i < curr.Length; i++)
             {
-                if (actual[i] == '(')
+                if (curr[i] == '(')
                     from = i;
-                if (actual[i] == ')')
+                if (curr[i] == ')')
                 {
-                    to = i;
+                    to = i + 1;
                     break;
                 }
             }
             if (from == -1)
                 break;
-            past = actual;
-            actual = Sustitution(actual, from, to + 1);
+            prev = curr;
+            substitutions.Add(curr[from..to]);
+            curr = curr.Replace(substitutions[^1], $"{{{substitutions.Count - 1}}}");
         }
-        return actual;
+        return curr;
     }
-    private string Sustitution(string s, int from, int to)
-    {
-        sustitutions.Add(actualLetter, s[from..to]);
-        string res = "";
-        for (int i = 0; i < s.Length; i++)
-        {
-            if (i == from)
-                res += actualLetter.ToString();
-            if (i >= from && i < to)
-                continue;
-            res += s[i];
-        }
-        actualLetter++;
-        return res;
-    }
-    #endregion
 }
