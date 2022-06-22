@@ -97,81 +97,8 @@ public class Interpreter
         }
 
         throw new ArgumentException("Invalid expression");
-
-
-        // int index = -1;
-        // for (int i = 0; i < s.Length; i++)
-        // {
-        //     if (s[i] == '+' || s[i] == '-')
-        //     {
-        //         index = i;
-        //         break;
-        //     }
-        // }
-        // if (index != -1)
-        // {
-        //     op = s[index].ToString();
-        //     string left = s[..(index)];
-        //     string right = s[(index + 1)..];
-        //     return (DelParenthesis(left), DelParenthesis(right));
-        // }
-        // else
-        // {
-        //     return GetAdvancedExpressions(s, out op);
-        // }
     }
-    // private (string, string) GetAdvancedExpressions(string s, out string op)
-    // {
-    //     op = "";
-    //     bool unary = false;
-    //     int index = -1;
-    //     int opIndex = int.MaxValue;
-    //     string actualOp = "";
-    //     for (int i = 0; i < s.Length; i++)
-    //     {
-    //         actualOp = "";
-    //         if (s[i] > 'a' && s[i] < 'z')
-    //         {
 
-    //             for (int j = i; j < s.Length; j++)
-    //             {
-    //                 if (s[j] > 'a' && s[j] < 'z')
-    //                     actualOp += s[j];
-    //                 else
-    //                 {
-    //                     i = j - 1;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         else
-    //             actualOp = s[i].ToString();
-    //         if (binaryOperators.ContainsKey(actualOp))
-    //         {
-    //             int newIndex = binaryOperators.Keys.ToList().IndexOf(actualOp);
-    //             if (newIndex < opIndex)
-    //             {
-    //                 op = actualOp;
-    //                 index = i;
-    //                 opIndex = newIndex;
-    //             }
-    //         }
-    //         if (unaryOperators.ContainsKey(actualOp) && op == "")
-    //         {
-    //             unary = true;
-    //             int newIndex = unaryOperators.Keys.ToList().IndexOf(actualOp);
-    //             if (newIndex < opIndex)
-    //             {
-    //                 op = actualOp;
-    //                 index = i;
-    //                 opIndex = newIndex;
-    //             }
-    //         }
-    //     }
-    //     if (unary)
-    //         return (DelParenthesis(s[(index + 1)..]), "");
-    //     return (DelParenthesis(s[0..index]), DelParenthesis(s[(index + 1)..]));
-    // }
     private static string DelParenthesis(string s)
     {
         while (s[0] == '(' && s[^1] == ')')
