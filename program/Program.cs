@@ -6,22 +6,23 @@ namespace cnsle;
 
 public static class Program
 {
-    static string functionName = "e^(x) * sin(x)";
+    static string function = "";
     static decimal Function(decimal input)
     {
-        return (decimal)(SetExpression(input).Evaluate());
-        // Insert function here
-        //return (decimal)(Math.Exp((double)input) * Math.Sin((double)input));
+        Interpreter interpreter = new();
+        var exp = interpreter.GetExpression(Parse(interpreter, function), input);
+        return (decimal)exp.Evaluate();
     }
     static void Main(string[] args)
     {
-        StartParsing("x*(3+2)");
+        string? read = Console.ReadLine();
+        function = (read == null) ? throw new Exception("Invalid function") : read;
         IntegralCalculator.optimalDivisionsPerUnit = 10000;
 
         decimal lower = decimal.Parse(Request("Limite inferior:"));
         decimal higher = decimal.Parse(Request("Limite superior:"));
 
-        Console.Write($"La integral definida de la funcion {functionName} entre {lower} y {higher} es: ");
+        Console.Write($"La integral definida de la funcion {function} entre {lower} y {higher} es: ");
 
         Stopwatch watch = new();
         watch.Start();
@@ -55,12 +56,10 @@ public static class Program
         );
         return e;
     }
-    static void StartParsing(string s)
+    static string Parse(Interpreter interpreter, string s)
     {
-        Interpreter interpreter = new();
         s = interpreter.Prepare(s);
         var stringParsed = interpreter.Parse(s);
-        Console.WriteLine(stringParsed);
-
+        return stringParsed;
     }
 }

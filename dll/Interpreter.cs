@@ -3,35 +3,9 @@ using System.Linq;
 namespace lib;
 public class Interpreter
 {
-    static readonly Dictionary<string, string> binaryOperators;
-    static readonly Dictionary<string, string> unaryOperators;
-
     static Interpreter()
-    {
-        binaryOperators = new()
-        {
-            { "+", "sum" },
-            { "-", "sub" },
-            { "*", "mult" },
-            { "/", "div" },
-            { "^", "pow" },
-            { "log", "log" }
-        };
-        unaryOperators = new()
-        {
-            { "ln", "ln" },
-            { "arcsin", "arcsin" },
-            { "arccos", "arccos" },
-            { "arctan", "arctan" },
-            { "arccot", "arccot" },
-            { "sin", "sin" },
-            { "cos", "cos" },
-            { "tan", "tan" },
-            { "cot", "cot" },
-            { "sec", "sec" },
-            { "csc", "csc" }
-        };
-    }
+    { }
+    #region Parsing
     List<string> substitutions = new();
     public string Prepare(string s)
     {
@@ -68,16 +42,16 @@ public class Interpreter
         (string lhs, string? rhs) = GetExpressions(s, out string op);
 
         if (rhs == null)
-            return $"{unaryOperators[op]}({GetParse(lhs)})";
+            return $"{Database.unaryOperators[op]}({GetParse(lhs)})";
 
-        return $"{binaryOperators[op]}({GetParse(lhs)},{GetParse(rhs)})";
+        return $"{Database.binaryOperators[op]}({GetParse(lhs)},{GetParse(rhs)})";
     }
     private static bool IsConstant(string s)
-        => binaryOperators.Keys.All(op => !s.Contains(op)) &&
-                unaryOperators.Keys.All(op => !s.Contains(op));
+        => Database.binaryOperators.Keys.All(op => !s.Contains(op)) &&
+                Database.unaryOperators.Keys.All(op => !s.Contains(op));
     private static (string lhs, string? rhs) GetExpressions(string s, out string op)
     {
-        foreach (var oper in binaryOperators.Keys)
+        foreach (var oper in Database.binaryOperators.Keys)
         {
             int i = s.IndexOf(oper);
             if (i >= 0)
@@ -87,7 +61,7 @@ public class Interpreter
             }
         }
 
-        foreach (var oper in unaryOperators.Keys)
+        foreach (var oper in Database.unaryOperators.Keys)
         {
             if (s.Contains(oper))
             {
@@ -149,4 +123,52 @@ public class Interpreter
         }
         return curr;
     }
+    #endregion
+
+    #region  ConvertToExpression
+    public Expression GetExpression(string s, decimal input)
+    {
+        if (!s.Any(x => x == '('))
+        {
+            if (s == "e")
+                return new Const((decimal)Math.E);
+            if (s == "π")
+                return new Const((decimal)Math.PI);
+            return new Const(input);
+        }
+        string oper = "";
+        int comaIndex = -1;
+        int from = 0;
+        int to = s.Length - 1;
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (s[i] == '(')
+            {
+                from = i + 1;
+                int count = 0;
+                for (int j = i + 1; j < s.Length; j++)
+                {
+                    if (s[j] == '(')
+                        count++;
+                    if (s[j] == ')')
+                        count--;
+                    if (s[j] == ',' && count == 0)
+                    {
+                        to = j;
+                        comaIndex = j;
+                        i = s.Length;
+                        break;
+                    }
+                }
+                i = s.Length;
+            }
+            else
+                oper += s[i];
+        }
+        if (comaIndex != -1)
+            return new BinaryGeneric(GetExpression(s[from..to], input), GetExpression(s[(to + 1)..^1], input), Database.BynaryStringToExpression[oper]);
+        else
+            return new UnaryGeneric(GetExpression(s[from..to], input), Database.UnaryStringToExpression[oper]);
+    }
+    #endregion
 }
