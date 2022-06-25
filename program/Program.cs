@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using lib;
-using System;
-using System.Threading;
 namespace cnsle;
 
 public static class Program
@@ -15,7 +13,7 @@ public static class Program
     }
     static void Main(string[] args)
     {
-        string? read = Console.ReadLine();
+        string? read = Request("Introduzca la funcion:");
         function = (read == null) ? throw new Exception("Invalid function") : read;
         IntegralCalculator.optimalDivisionsPerUnit = 10000;
 

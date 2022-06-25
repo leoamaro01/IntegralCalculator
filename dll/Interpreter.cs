@@ -134,7 +134,11 @@ public class Interpreter
                 return new Const((decimal)Math.E);
             if (s == "π")
                 return new Const((decimal)Math.PI);
-            return new Const(input);
+            decimal number = input;
+            if (decimal.TryParse(s, out number))
+                return new Const(number);
+            else
+                return new Const(input);
         }
         string oper = "";
         int comaIndex = -1;

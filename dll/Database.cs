@@ -8,8 +8,8 @@ public static class Database
         {"sub" , (x,y)=>x-y},
         {"mult" , (x,y)=>x*y},
         {"div" , (x,y)=>x/y},
-        {"pow" , (x,y)=>(decimal)Math.Pow((double)x,(double)y)}
-        //{"log" , (x,y)=>x+y}
+        {"pow" , (x,y)=>(decimal)Math.Pow((double)x,(double)y)},
+        {"log" , (x,y)=>(decimal)Math.Log((double)x,(double)y)}
     };
     public static Dictionary<string, Func<decimal, decimal>> UnaryStringToExpression = new()
     {
@@ -27,8 +27,8 @@ public static class Database
         { "-", "sub" },
         { "*", "mult" },
         { "/", "div" },
-        { "^", "pow" }
-        //{ "log", "log" }
+        { "^", "pow" },
+        { "log", "log" }
     };
     public static Dictionary<string, string> unaryOperators = new()
     {
