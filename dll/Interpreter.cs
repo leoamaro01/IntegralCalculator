@@ -126,7 +126,7 @@ public class Interpreter
     #endregion
 
     #region  ConvertToExpression
-    public Expression GetExpression(string s, decimal input)
+    public Expression GetExpression(string s)
     {
         if (!s.Any(x => x == '('))
         {
@@ -134,11 +134,11 @@ public class Interpreter
                 return new Const((decimal)Math.E);
             if (s == "π")
                 return new Const((decimal)Math.PI);
-            decimal number = input;
+            decimal number = -1;
             if (decimal.TryParse(s, out number))
                 return new Const(number);
             else
-                return new Const(input);
+                return new Variable();
         }
         string oper = "";
         int comaIndex = -1;
@@ -170,9 +170,9 @@ public class Interpreter
                 oper += s[i];
         }
         if (comaIndex != -1)
-            return new BinaryGeneric(GetExpression(s[from..to], input), GetExpression(s[(to + 1)..^1], input), Database.BynaryStringToExpression[oper]);
+            return new BinaryGeneric(GetExpression(s[from..to]), GetExpression(s[(to + 1)..^1]), Database.BynaryStringToExpression[oper]);
         else
-            return new UnaryGeneric(GetExpression(s[from..to], input), Database.UnaryStringToExpression[oper]);
+            return new UnaryGeneric(GetExpression(s[from..to]), Database.UnaryStringToExpression[oper]);
     }
     #endregion
 }

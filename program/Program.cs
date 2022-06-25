@@ -7,14 +7,19 @@ public static class Program
     static string function = "";
     static decimal Function(decimal input)
     {
+        return Evaluator.Evaluate(input);
+    }
+    static void SetEvaluator()
+    {
+        Evaluator.Reset();
+        string? read = Request("Introduzca la funcion:");
+        function = (read == null) ? throw new Exception("Invalid function") : read;
         Interpreter interpreter = new();
-        var exp = interpreter.GetExpression(Parse(interpreter, function), input);
-        return (decimal)exp.Evaluate();
+        Evaluator.SetExpresion(interpreter.GetExpression(Parse(interpreter, function)));
     }
     static void Main(string[] args)
     {
-        string? read = Request("Introduzca la funcion:");
-        function = (read == null) ? throw new Exception("Invalid function") : read;
+        SetEvaluator();
         IntegralCalculator.optimalDivisionsPerUnit = 10000;
 
         decimal lower = decimal.Parse(Request("Limite inferior:"));

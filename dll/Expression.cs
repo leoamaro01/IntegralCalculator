@@ -1,4 +1,3 @@
-using System;
 namespace lib;
 
 public abstract class Expression
@@ -71,5 +70,23 @@ public class Const : Expression
     public override decimal Evaluate()
     {
         return value;
+    }
+}
+public class Variable : Expression
+{
+    private decimal x;
+    public Variable()
+    {
+        Evaluator.ChangeValue += WatchValue;
+    }
+
+    public override decimal Evaluate()
+    {
+        return x;
+    }
+
+    private void WatchValue(decimal x)
+    {
+        this.x = x;
     }
 }
