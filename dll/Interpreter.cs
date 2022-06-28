@@ -15,7 +15,6 @@ public class Interpreter
     }
     public string Parse(string s)
     {
-        //sum(sin(x+1), {5})
         s = GetParse(s);
 
         string[] subsArray = substitutions.ToArray();
@@ -43,7 +42,13 @@ public class Interpreter
 
         if (rhs == null)
             return $"{Database.unaryOperators[op]}({GetParse(lhs)})";
-
+        if (lhs == "")
+        {
+            if (op == "-" || op == "+")
+                lhs = "0";
+            if (op == "*" || op == "/")
+                lhs = "1";
+        }
         return $"{Database.binaryOperators[op]}({GetParse(lhs)},{GetParse(rhs)})";
     }
     private static bool IsConstant(string s)
@@ -170,7 +175,11 @@ public class Interpreter
                 oper += s[i];
         }
         if (comaIndex != -1)
-            return new BinaryGeneric(GetExpression(s[from..to]), GetExpression(s[(to + 1)..^1]), Database.BynaryStringToExpression[oper]);
+        {
+            Expression left = GetExpression(s[from..to]);
+            Expression right = GetExpression(s[(to + 1)..^1]);
+            return new BinaryGeneric(left, right, Database.BynaryStringToExpression[oper]);
+        }
         else
             return new UnaryGeneric(GetExpression(s[from..to]), Database.UnaryStringToExpression[oper]);
     }
