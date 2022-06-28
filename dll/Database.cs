@@ -19,8 +19,8 @@ public static class Database
         { "sec",(x)=> (decimal)(1/Math.Cos((double)x))},
         { "csc",(x)=> (decimal)(1/Math.Sin((double)x))},
         {"log2" , (x)=>(decimal)Math.Log((double)x,2)},
-        {"log10" , (x)=>(decimal)Math.Log((double)x,10)},
-        {"log" , (x)=>(decimal)Math.Log((double)x,10)},
+        {"log10" , (x)=>(decimal)Math.Log10((double)x)},
+        {"log" , (x)=>(decimal)Math.Log10((double)x)},
         {"ln" , (x)=>(decimal)Math.Log((double)x)}
     };
     public static Dictionary<string, string> binaryOperators = new()

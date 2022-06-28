@@ -70,6 +70,8 @@ public class Interpreter
         {
             if (s.Contains(oper))
             {
+                if (oper == s)
+                    continue;
                 op = oper;
                 return (s[oper.Length..], null);
             }

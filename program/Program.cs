@@ -7,10 +7,20 @@ public static class Program
     static string function = "";
     static decimal Function(decimal input)
     {
-        return Evaluator.Evaluate(input);
+        Expression exp = new BinaryGeneric(
+            new UnaryGeneric(
+                new Const(2), ((x) => (decimal)Math.Log((double)x, 10))
+            ),
+            new Const(input),
+            (x, y) => x - y
+        );
+        return exp.Evaluate();
+        //return Evaluator.Evaluate(input);
     }
     static void SetEvaluator()
     {
+
+
         Evaluator.Reset();
         string? read = Request("Introduzca la funcion:").ToLower();
         function = (read == null) ? throw new Exception("Invalid function") : read;
@@ -19,8 +29,8 @@ public static class Program
     }
     static void Main(string[] args)
     {
-        SetEvaluator();
-        IntegralCalculator.optimalDivisionsPerUnit = 10000;
+        //SetEvaluator();
+        IntegralCalculator.optimalDivisionsPerUnit = 1000000;
 
         decimal lower = decimal.Parse(Request("Limite inferior:"));
         decimal higher = decimal.Parse(Request("Limite superior:"));
