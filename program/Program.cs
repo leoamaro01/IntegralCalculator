@@ -12,7 +12,7 @@ public static class Program
     static void SetEvaluator()
     {
         Evaluator.Reset();
-        string? read = Request("Introduzca la funcion:");
+        string? read = Request("Introduzca la funcion:").ToLower();
         function = (read == null) ? throw new Exception("Invalid function") : read;
         Interpreter interpreter = new();
         Evaluator.SetExpresion(interpreter.GetExpression(Parse(interpreter, function)));

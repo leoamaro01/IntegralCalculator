@@ -8,18 +8,20 @@ public static class Database
         {"sub" , (x,y)=>x-y},
         {"mult" , (x,y)=>x*y},
         {"div" , (x,y)=>x/y},
-        {"pow" , (x,y)=>(decimal)Math.Pow((double)x,(double)y)},
-        {"log" , (x,y)=>(decimal)Math.Log((double)x,(double)y)}
-    };
+        {"pow" , (x,y)=>(decimal)Math.Pow((double)x,(double)y)}
+        };
     public static Dictionary<string, Func<decimal, decimal>> UnaryStringToExpression = new()
     {
-        { "ln", (x)=> (decimal)Math.Log((double)x)},
         { "sin",(x)=> (decimal)Math.Sin((double)x)},
         { "cos",(x)=> (decimal)Math.Cos((double)x)},
         { "tan",(x)=> (decimal)Math.Tan((double)x)},
         { "cot",(x)=> (decimal)(1/Math.Tan((double)x))},
         { "sec",(x)=> (decimal)(1/Math.Cos((double)x))},
-        { "csc",(x)=> (decimal)(1/Math.Sin((double)x))}
+        { "csc",(x)=> (decimal)(1/Math.Sin((double)x))},
+        {"log2" , (x)=>(decimal)Math.Log((double)x,2)},
+        {"log10" , (x)=>(decimal)Math.Log((double)x,10)},
+        {"log" , (x)=>(decimal)Math.Log((double)x,10)},
+        {"ln" , (x)=>(decimal)Math.Log((double)x)}
     };
     public static Dictionary<string, string> binaryOperators = new()
     {
@@ -27,11 +29,13 @@ public static class Database
         { "-", "sub" },
         { "*", "mult" },
         { "/", "div" },
-        { "^", "pow" },
-        { "log", "log" }
+        { "^", "pow" }
     };
     public static Dictionary<string, string> unaryOperators = new()
     {
+        { "log2", "log2" },
+        { "log10", "log10" },
+        { "log", "log" },
         { "ln", "ln" },
         { "sin", "sin" },
         { "cos", "cos" },
