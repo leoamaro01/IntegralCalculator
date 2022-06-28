@@ -18,8 +18,8 @@ public class IntegralCalculator
         decimal sum = 0;
 
         for (int i = 0; i < precission; i++)
-            sum += Math.Abs(function(lowerLimit + (delta * i) + (delta * midpoint))) * delta;
+            sum += function(lowerLimit + (delta * i) + (delta * midpoint)) * delta;
 
-        return sum;
+        return Math.Abs(sum);
     }
 }
