@@ -20,6 +20,6 @@ public class IntegralCalculator
         for (int i = 0; i < precission; i++)
             sum += function(lowerLimit + (delta * i) + (delta * midpoint)) * delta;
 
-        return Math.Abs(sum);
+        return sum;
     }
 }
