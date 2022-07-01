@@ -14,6 +14,8 @@ public class IntegralCalculator
         int precission,
         Func<decimal, decimal> function)
     {
+        if (higherLimit == lowerLimit)
+            return 0m;
         decimal delta = (higherLimit - lowerLimit) / precission;
         decimal sum = 0;
 

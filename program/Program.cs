@@ -9,23 +9,41 @@ public static class Program
     {
         return Evaluator.Evaluate(input);
     }
-    static void SetEvaluator()
+    static void SetEvaluator(decimal lower, decimal higher)
     {
         Evaluator.Reset();
-        string? read = Request("Introduzca la funcion:").ToLower();
-        function = (read == null) ? throw new Exception("Invalid function") : read;
         Interpreter interpreter = new();
         Evaluator.SetExpresion(interpreter.GetExpression(Parse(interpreter, function)));
     }
+    static void PaintMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("Esta calculadora se basa en la integración mediante las sumas de Riemann.");
+        Console.WriteLine("Si desea usar un límite infinito positivo introduzca la palabra inf o -inf para el negativo.");
+        Console.WriteLine("Operadores disponibles:");
+        var binaryOperators = Database.binaryOperators.Keys.ToList();
+        var unaryOperators = Database.unaryOperators.Keys.ToList();
+        Console.WriteLine("Binary Operators:");
+        binaryOperators.ForEach((x) => Console.Write(x + " "));
+        Console.WriteLine("");
+        Console.WriteLine("Unary Operators:");
+        unaryOperators.ForEach((x) => Console.Write(x + " "));
+        Console.WriteLine("");
+    }
     static void Main(string[] args)
     {
-        SetEvaluator();
+        PaintMenu();
+        string? read = Request("Introduzca la función a integrar:").ToLower();
+        function = (read == null) ? throw new Exception("Invalid function") : read;
+
         IntegralCalculator.optimalDivisionsPerUnit = 1000000;
 
-        decimal lower = decimal.Parse(Request("Limite inferior:"));
-        decimal higher = decimal.Parse(Request("Limite superior:"));
-
-        Console.Write($"La integral definida de la funcion {function} entre {lower} y {higher} es: ");
+        string sLower = Request("Límite inferior:").ToLower();
+        string sHigher = Request("Límite superior:").ToLower();
+        decimal lower = GetLimit(sLower);
+        decimal higher = GetLimit(sHigher);
+        SetEvaluator(lower, higher);
+        Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
 
         Stopwatch watch = new();
         watch.Start();
@@ -64,5 +82,24 @@ public static class Program
         s = interpreter.Prepare(s);
         var stringParsed = interpreter.Parse(s);
         return stringParsed;
+    }
+    static decimal GetLimit(string limit)
+    {
+        decimal result = 0m;
+        switch (limit)
+        {
+            case "-inf":
+                return -(decimal)(Math.Pow(10, 2));
+            case "inf":
+                return (decimal)(Math.Pow(10, 2));
+            default:
+                {
+                    if (!decimal.TryParse(limit, out result))
+                    {
+                        throw new Exception("Límite inválido");
+                    }
+                    return result;
+                }
+        }
     }
 }
