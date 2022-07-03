@@ -13,7 +13,7 @@ public static class Program
     {
         Evaluator.Reset();
         Interpreter interpreter = new();
-        Evaluator.SetExpresion(interpreter.GetExpression(Parse(interpreter, function)));
+        Evaluator.SetExpresion(interpreter.GetExpression(interpreter.Parse(function)));
     }
     static void PaintMenu()
     {
@@ -76,12 +76,6 @@ public static class Program
             ((x, y) => x * y)
         );
         return e;
-    }
-    static string Parse(Interpreter interpreter, string s)
-    {
-        s = interpreter.Prepare(s);
-        var stringParsed = interpreter.Parse(s);
-        return stringParsed;
     }
     static decimal GetLimit(string limit)
     {
