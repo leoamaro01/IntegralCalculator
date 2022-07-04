@@ -12,6 +12,12 @@ public static class Database
         };
     public static Dictionary<string, Func<decimal, decimal>> UnaryStringToExpression = new()
     {
+        {"arccos",(x)=>(decimal)Math.Acos((double)x)},
+        {"arcsin",(x)=>(decimal)Math.Asin((double)x)},
+        {"sinh",(x)=>(decimal)Math.Sinh((double)x)},
+        {"cosh",(x)=>(decimal)Math.Cosh((double)x)},
+        {"arcsinh",(x)=>(decimal)Math.Asinh((double)x)},
+        {"arccosh",(x)=>(decimal)Math.Acosh((double)x)},
         { "sin",(x)=> (decimal)Math.Sin((double)x)},
         { "cos",(x)=> (decimal)Math.Cos((double)x)},
         { "tan",(x)=> (decimal)Math.Tan((double)x)},
@@ -21,14 +27,7 @@ public static class Database
         {"log2" , (x)=>(decimal)Math.Log((double)x,2)},
         {"log10" , (x)=>(decimal)Math.Log10((double)x)},
         {"log" , (x)=>(decimal)Math.Log10((double)x)},
-        {"ln" , (x)=>(decimal)Math.Log((double)x)},
-        {"arccos",(x)=>(decimal)Math.Acos((double)x)},
-        {"arcsin",(x)=>(decimal)Math.Asin((double)x)},
-        {"sinh",(x)=>(decimal)Math.Sinh((double)x)},
-        {"cosh",(x)=>(decimal)Math.Cosh((double)x)},
-        {"arcsinh",(x)=>(decimal)Math.Asinh((double)x)},
-        {"arccosh",(x)=>(decimal)Math.Acosh((double)x)}
-
+        {"ln" , (x)=>(decimal)Math.Log((double)x)}
     };
     public static Dictionary<string, string> binaryOperators = new()
     {
@@ -40,6 +39,12 @@ public static class Database
     };
     public static Dictionary<string, string> unaryOperators = new()
     {
+        {"arccos","arccos"},
+        {"arcsin","arcsin"},
+        {"sinh","sinh"},
+        {"cosh","cosh"},
+        {"arcsinh","arcsinh"},
+        {"arccosh","arccosh"},
         { "log2", "log2" },
         { "log10", "log10" },
         { "log", "log" },
@@ -49,13 +54,6 @@ public static class Database
         { "tan", "tan" },
         { "cot", "cot" },
         { "sec", "sec" },
-        { "csc", "csc" },
-        {"arccos","arccos"},
-        {"arcsin","arcsin"},
-        {"sinh","sinh"},
-        {"cosh","cosh"},
-        {"arcsinh","arcsinh"},
-        {"arccosh","arccosh"}
-
+        { "csc", "csc" }
     };
 }
