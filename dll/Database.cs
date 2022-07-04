@@ -2,10 +2,6 @@ namespace lib;
 
 public static class Database
 {
-    //Añadir un operador nuevo se limita con esta configuración a solamente definir su conversión a la forma prefija 
-    //y el delegado que contiene su definición
-
-    //Key = operador, Value= delegado que contiene la función del operador binario
     public static Dictionary<string, Func<decimal, decimal, decimal>> BynaryStringToExpression = new()
     {
         {"sum" , (x,y)=>x+y},
@@ -14,8 +10,6 @@ public static class Database
         {"div" , (x,y)=>x/y},
         {"pow" , (x,y)=>(decimal)Math.Pow((double)x,(double)y)}
         };
-
-    //Key = operador, Value= delegado que contiene la función del operador unario
     public static Dictionary<string, Func<decimal, decimal>> UnaryStringToExpression = new()
     {
         { "sin",(x)=> (decimal)Math.Sin((double)x)},
@@ -27,9 +21,15 @@ public static class Database
         {"log2" , (x)=>(decimal)Math.Log((double)x,2)},
         {"log10" , (x)=>(decimal)Math.Log10((double)x)},
         {"log" , (x)=>(decimal)Math.Log10((double)x)},
-        {"ln" , (x)=>(decimal)Math.Log((double)x)}
+        {"ln" , (x)=>(decimal)Math.Log((double)x)},
+        {"arccos",(x)=>(decimal)Math.Acos((double)x)},
+        {"arcsin",(x)=>(decimal)Math.Asin((double)x)},
+        {"sinh",(x)=>(decimal)Math.Sinh((double)x)},
+        {"cosh",(x)=>(decimal)Math.Cosh((double)x)},
+        {"arcsinh",(x)=>(decimal)Math.Asinh((double)x)},
+        {"arccosh",(x)=>(decimal)Math.Acosh((double)x)}
+
     };
-    //Conversión del operador binario infijo al prefijo
     public static Dictionary<string, string> binaryOperators = new()
     {
         { "+", "sum" },
@@ -38,7 +38,6 @@ public static class Database
         { "/", "div" },
         { "^", "pow" }
     };
-    //Conversión del operador unario infijo al prefijo
     public static Dictionary<string, string> unaryOperators = new()
     {
         { "log2", "log2" },
@@ -50,6 +49,13 @@ public static class Database
         { "tan", "tan" },
         { "cot", "cot" },
         { "sec", "sec" },
-        { "csc", "csc" }
+        { "csc", "csc" },
+        {"arccos","arccos"},
+        {"arcsin","arcsin"},
+        {"sinh","sinh"},
+        {"cosh","cosh"},
+        {"arcsinh","arcsinh"},
+        {"arccosh","arccosh"}
+
     };
 }

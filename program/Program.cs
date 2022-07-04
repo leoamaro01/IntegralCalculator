@@ -4,7 +4,7 @@ namespace cnsle;
 
 public static class Program
 {
-    static string function = "";
+    static string function = string.Empty;
     static decimal Function(decimal input)
     {
         return Evaluator.Evaluate(input);
@@ -15,7 +15,7 @@ public static class Program
         Interpreter interpreter = new();
         Evaluator.SetExpresion(interpreter.GetExpression(interpreter.Parse(function)));
     }
-    static void PaintMenu()
+    static void PaintMenu()//Imprime la parte de los operadores a utilizar 
     {
         Console.Clear();
         Console.WriteLine("Esta calculadora se basa en la integración mediante las sumas de Riemann.");
