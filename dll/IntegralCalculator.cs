@@ -98,7 +98,7 @@ public class IntegralCalculator
             {
                 double dimensionValue = lowerLimits[currentDimension] + (i * interval) + (midpoint * interval);
                 basePoint[currentDimension] = dimensionValue;
-                RecursiveIterator(points, basePoint, i + 1);
+                RecursiveIterator(points, basePoint, currentDimension + 1);
             }
         }
 
