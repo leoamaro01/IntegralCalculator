@@ -21,7 +21,7 @@ public class BinaryGeneric : Expression
     }
     private double Evaluate(double left, double right)
     {
-        return func(left, right);
+        return this.func(left, right);
     }
 }
 public class UnaryGeneric : Expression
@@ -57,9 +57,11 @@ public class Const : Expression
 }
 public class Variable : Expression
 {
+    public readonly string ID;
     private double x;
-    public Variable()
+    public Variable(string ID)
     {
+        this.ID = ID;
         Evaluator.ChangeValue += WatchValue;
     }
 
@@ -68,8 +70,10 @@ public class Variable : Expression
         return x;
     }
 
-    private void WatchValue(double x)
+
+    private void WatchValue(string ID, double x)
     {
-        this.x = x;
+        if (ID == this.ID)
+            this.x = x;
     }
 }

@@ -1,15 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System.Linq.Expressions;
+using System.Diagnostics;
 using lib;
+using Expression = lib.Expression;
 namespace cnsle;
 
 public static class Program
 {
     static string function = string.Empty;
-    static double Function(double input)
+    static double Function(double[] input)
     {
         return Evaluator.Evaluate(input);
     }
-    static void SetEvaluator(double lower, double higher)
+    static void SetEvaluator()
     {
         Evaluator.Reset();
         Interpreter interpreter = new();
@@ -34,24 +36,32 @@ public static class Program
     {
         PaintMenu();
         string? read = Request("Introduzca la función a integrar:").ToLower();
-        function = (read == null) ? throw new Exception("Invalid function") : read;
+        function = read ?? throw new Exception("Invalid function");
 
         IntegralCalculator.optimalDivisionsPerUnit = 1000000;
-
+        SetEvaluator();
         string sLower = Request("Límite inferior:").ToLower();
         string sHigher = Request("Límite superior:").ToLower();
-        double lower = GetLimit(sLower);
-        double higher = GetLimit(sHigher);
-        SetEvaluator(lower, higher);
+
+        double[] lower = GetLimit(sLower);
+        double[] higher = GetLimit(sHigher);
         Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
 
         Stopwatch watch = new();
         watch.Start();
 
-        double integral = IntegralCalculator.Calculate(lower,
+        IntegralCalculator.optimalDivisionsPerUnit = 5;
+        int[] startingPrecissions = new int[lower.Length];
+        for (int i = 0; i < startingPrecissions.Length; i++)
+        {
+            startingPrecissions[i] = IntegralCalculator.GetOptimalPrecission(Math.Abs(higher[i] - lower[i]));
+        }
+
+        double integral = IntegralCalculator.OptimalCalculate(lower,
                             higher,
-                            IntegralCalculator.GetOptimalPrecission(higher - lower),
-                            Function);
+                            Function,
+                            ref startingPrecissions);
+
         watch.Stop();
 
         Console.WriteLine($"{integral} ~ {Math.Round(integral, 3)}");
@@ -61,6 +71,21 @@ public static class Program
     {
         Console.WriteLine(query);
         return Console.ReadLine() ?? "";
+    }
+
+    static string RequestLimits(string query)
+    {
+        string result = "";
+        Console.WriteLine(query);
+        for (int i = 0; i < Evaluator.IDs.Count; i++)
+        {
+            Console.Write($"{Evaluator.IDs[i]}: ");
+            result += Console.ReadLine() + ",";
+            Console.WriteLine("");
+        }
+        return result[..^1];
+
+
     }
     static Expression SetExpression(double input)
     {
@@ -77,23 +102,34 @@ public static class Program
         );
         return e;
     }
-    static double GetLimit(string limit)
+    static double[] GetLimit(string limit)
     {
-        double result = 0m;
-        switch (limit)
+        string[] limits = limit.Split(',');
+        double[] result = new double[limits.Length];
+        for (int i = 0; i < result.Length; i++)
         {
-            case "-inf":
-                return -(double)(Math.Pow(10, 2));
-            case "inf":
-                return (double)(Math.Pow(10, 2));
-            default:
-                {
-                    if (!double.TryParse(limit, out result))
+            switch (limits[i])
+            {
+                case "-inf":
                     {
-                        throw new Exception("Límite inválido");
+                        result[i] = -(double)(Math.Pow(10, 2));
+                        break;
                     }
-                    return result;
-                }
+                case "inf":
+                    {
+                        result[i] = (double)(Math.Pow(10, 2));
+                        break;
+                    }
+                default:
+                    {
+                        if (!double.TryParse(limits[i], out result[i]))
+                        {
+                            throw new Exception("Límite inválido");
+                        }
+                        break;
+                    }
+            }
         }
+        return result;
     }
 }

@@ -196,8 +196,10 @@ public class Interpreter
             if (double.TryParse(function, out number))
                 return new Const(number);
             else
-                //Al no ser un número se le considera una variable
-                return new Variable();
+            {
+                Evaluator.IDs.Add(function);
+                return new Variable(function);
+            }
         }
         string oper = "";
         int comaIndex = -1;
