@@ -1,7 +1,7 @@
 namespace lib;
 public static class Evaluator
 {
-    public static event Action<decimal>? ChangeValue;
+    public static event Action<double>? ChangeValue;
 
     /// <summary>
     ///  Resetea a valores por defecto las propiedades del Evaluator
@@ -17,7 +17,7 @@ public static class Evaluator
     {
         expression = exp;
     }
-    public static decimal Evaluate(decimal x)
+    public static double Evaluate(double x)
     {
         if (expression == null)
         {

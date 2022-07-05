@@ -189,11 +189,11 @@ public class Interpreter
         if (!function.Any(x => x == '('))
         {
             if (function == "e")
-                return new Const((decimal)Math.E);
+                return new Const((double)Math.E);
             if (function == "π")
-                return new Const((decimal)Math.PI);
-            decimal number = -1;
-            if (decimal.TryParse(function, out number))
+                return new Const((double)Math.PI);
+            double number = -1;
+            if (double.TryParse(function, out number))
                 return new Const(number);
             else
                 //Al no ser un número se le considera una variable

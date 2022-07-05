@@ -5,11 +5,11 @@ namespace cnsle;
 public static class Program
 {
     static string function = string.Empty;
-    static decimal Function(decimal input)
+    static double Function(double input)
     {
         return Evaluator.Evaluate(input);
     }
-    static void SetEvaluator(decimal lower, decimal higher)
+    static void SetEvaluator(double lower, double higher)
     {
         Evaluator.Reset();
         Interpreter interpreter = new();
@@ -40,15 +40,15 @@ public static class Program
 
         string sLower = Request("Límite inferior:").ToLower();
         string sHigher = Request("Límite superior:").ToLower();
-        decimal lower = GetLimit(sLower);
-        decimal higher = GetLimit(sHigher);
+        double lower = GetLimit(sLower);
+        double higher = GetLimit(sHigher);
         SetEvaluator(lower, higher);
         Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
 
         Stopwatch watch = new();
         watch.Start();
 
-        decimal integral = IntegralCalculator.Calculate(lower,
+        double integral = IntegralCalculator.Calculate(lower,
                             higher,
                             IntegralCalculator.GetOptimalPrecission(higher - lower),
                             Function);
@@ -62,33 +62,33 @@ public static class Program
         Console.WriteLine(query);
         return Console.ReadLine() ?? "";
     }
-    static Expression SetExpression(decimal input)
+    static Expression SetExpression(double input)
     {
         Expression e = new BinaryGeneric(
             new UnaryGeneric(
-                new Const((decimal)input),
-                ((x) => (decimal)Math.Exp((double)x))
+                new Const((double)input),
+                ((x) => (double)Math.Exp((double)x))
             ),
             new UnaryGeneric(
                 new Const(input),
-                ((x) => (decimal)Math.Sin((double)x))
+                ((x) => (double)Math.Sin((double)x))
             ),
             ((x, y) => x * y)
         );
         return e;
     }
-    static decimal GetLimit(string limit)
+    static double GetLimit(string limit)
     {
-        decimal result = 0m;
+        double result = 0m;
         switch (limit)
         {
             case "-inf":
-                return -(decimal)(Math.Pow(10, 2));
+                return -(double)(Math.Pow(10, 2));
             case "inf":
-                return (decimal)(Math.Pow(10, 2));
+                return (double)(Math.Pow(10, 2));
             default:
                 {
-                    if (!decimal.TryParse(limit, out result))
+                    if (!double.TryParse(limit, out result))
                     {
                         throw new Exception("Límite inválido");
                     }
