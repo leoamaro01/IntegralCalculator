@@ -5,11 +5,11 @@ namespace cnsle;
 public static class Program
 {
     static string function = string.Empty;
-    static decimal Function(decimal input)
+    static decimal Function(List<decimal> input)
     {
         return Evaluator.Evaluate(input);
     }
-    static void SetEvaluator(decimal lower, decimal higher)
+    static void SetEvaluator()
     {
         Evaluator.Reset();
         Interpreter interpreter = new();
@@ -37,12 +37,11 @@ public static class Program
         function = (read == null) ? throw new Exception("Invalid function") : read;
 
         IntegralCalculator.optimalDivisionsPerUnit = 1000000;
-
+        SetEvaluator();
         string sLower = Request("Límite inferior:").ToLower();
         string sHigher = Request("Límite superior:").ToLower();
-        decimal lower = GetLimit(sLower);
-        decimal higher = GetLimit(sHigher);
-        SetEvaluator(lower, higher);
+        decimal[] lower = GetLimit(sLower);
+        decimal[] higher = GetLimit(sHigher);
         Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
 
         Stopwatch watch = new();
@@ -62,6 +61,20 @@ public static class Program
         Console.WriteLine(query);
         return Console.ReadLine() ?? "";
     }
+    static string RequestLimits(string query)
+    {
+        string result = "";
+        Console.WriteLine(query);
+        for (int i = 0; i < Evaluator.IDs.Count; i++)
+        {
+            Console.Write($"{Evaluator.IDs[i]}: ");
+            result += Console.ReadLine() + ",";
+            Console.WriteLine("");
+        }
+        return result[..^1];
+
+
+    }
     static Expression SetExpression(decimal input)
     {
         Expression e = new BinaryGeneric(
@@ -77,23 +90,34 @@ public static class Program
         );
         return e;
     }
-    static decimal GetLimit(string limit)
+    static decimal[] GetLimit(string limit)
     {
-        decimal result = 0m;
-        switch (limit)
+        string[] limits = limit.Split(',');
+        decimal[] result = new decimal[limits.Length];
+        for (int i = 0; i < result.Length; i++)
         {
-            case "-inf":
-                return -(decimal)(Math.Pow(10, 2));
-            case "inf":
-                return (decimal)(Math.Pow(10, 2));
-            default:
-                {
-                    if (!decimal.TryParse(limit, out result))
+            switch (limits[i])
+            {
+                case "-inf":
                     {
-                        throw new Exception("Límite inválido");
+                        result[i] = -(decimal)(Math.Pow(10, 2));
+                        break;
                     }
-                    return result;
-                }
+                case "inf":
+                    {
+                        result[i] = (decimal)(Math.Pow(10, 2));
+                        break;
+                    }
+                default:
+                    {
+                        if (!decimal.TryParse(limits[i], out result[i]))
+                        {
+                            throw new Exception("Límite inválido");
+                        }
+                        break;
+                    }
+            }
         }
+        return result;
     }
 }
