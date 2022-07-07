@@ -20,7 +20,7 @@ public class IntegralCalculator
         Func<double[], double> function,
         ref int[] startingPrecissions,
         int precissionIncrementFactor = 10,
-        double optimalError = 0.0001,
+        double optimalError = 0.01,
         int midpoints = 3
     )
     {
@@ -68,9 +68,9 @@ public class IntegralCalculator
         if (higherLimits == lowerLimits)
             return 0.0;
 
-        double interval = CalculateHyperIntervals(lowerLimits, higherLimits, precissions);
+        double interval = CalculateHyperIntervals(lowerLimits, higherLimits, precissions, out double step);
 
-        double[][] values = CalculateHyperValues(lowerLimits, interval, precissions);
+        double[][] values = CalculateHyperValues(lowerLimits, step, precissions);
 
         double sum = 0;
 
@@ -80,7 +80,7 @@ public class IntegralCalculator
         return sum * interval;
     }
 
-    public static double[][] CalculateHyperValues(double[] lowerLimits, double interval, int[] precissions)
+    public static double[][] CalculateHyperValues(double[] lowerLimits, double step, int[] precissions)
     {
         void RecursiveIterator(List<double[]> points,
                                   double[] currentPoint,
@@ -92,13 +92,11 @@ public class IntegralCalculator
                 return;
             }
 
-            double[] basePoint = (double[])currentPoint.Clone();
-
             for (int i = 0; i < precissions[currentDimension]; i++)
             {
-                double dimensionValue = lowerLimits[currentDimension] + (i * interval) + (midpoint * interval);
-                basePoint[currentDimension] = dimensionValue;
-                RecursiveIterator(points, basePoint, currentDimension + 1);
+                double dimensionValue = lowerLimits[currentDimension] + (i * step) + (midpoint * step);
+                currentPoint[currentDimension] = dimensionValue;
+                RecursiveIterator(points, (double[])currentPoint.Clone(), currentDimension + 1);
             }
         }
 
@@ -107,17 +105,19 @@ public class IntegralCalculator
 
         return points.ToArray();
     }
-    public static double CalculateHyperIntervals(double[] lowerLimits, double[] higherLimits, int[] precissions)
+    public static double CalculateHyperIntervals(double[] lowerLimits, double[] higherLimits, int[] precissions, out double step)
     {
         double[] intervals = new double[lowerLimits.Length];
 
         for (int i = 0; i < intervals.Length; i++)
-            intervals[i] = (lowerLimits[i] - higherLimits[i]) / precissions[i];
+            intervals[i] = (higherLimits[i] - lowerLimits[i]) / precissions[i];
 
         double space = 1;
 
         foreach (var interval in intervals)
             space *= interval;
+
+        step = intervals.Average();
 
         return space;
     }
