@@ -50,7 +50,7 @@ public static class Program
         Stopwatch watch = new();
         watch.Start();
 
-        IntegralCalculator.optimalDivisionsPerUnit = 5;
+        IntegralCalculator.optimalDivisionsPerUnit = 10;
         int[] startingPrecissions = new int[lower.Length];
         for (int i = 0; i < startingPrecissions.Length; i++)
         {
@@ -60,11 +60,12 @@ public static class Program
         double integral = IntegralCalculator.OptimalCalculate(lower,
                             higher,
                             Function,
-                            ref startingPrecissions);
+                            ref startingPrecissions, 5, 0.1f, 2);
 
         watch.Stop();
 
         Console.WriteLine($"{integral} ~ {Math.Round(integral, 3)}");
+        Console.WriteLine($"Calculado con un total de {startingPrecissions.Aggregate((a, e) => a * e)} intervalos de suma de Riemann.");
         Console.WriteLine($"Calculado en {watch.ElapsedMilliseconds}ms");
     }
     static string Request(string query)
