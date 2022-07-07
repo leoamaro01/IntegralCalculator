@@ -1,25 +1,16 @@
 using System.Linq;
 namespace lib;
-public static class Evaluator
+public class Evaluator
 {
+    public List<string> IDs;
+    private Expression? expression;
     public static event Action<string, double>? ChangeValue;
-    public static List<string> IDs = new();
-
-    /// <summary>
-    ///  Resetea a valores por defecto las propiedades del Evaluator
-    /// </summary>
-    /// <param name=""></param>
-    /// <returns></returns>
-    public static void Reset()
+    public Evaluator(Expression exp, List<string> IDs)
     {
-        expression = null;
+        this.IDs = IDs;
+        this.expression = exp;
     }
-    private static Expression? expression;
-    public static void SetExpresion(Expression exp)
-    {
-        expression = exp;
-    }
-    public static double Evaluate(double[] values)
+    public double Evaluate(double[] values)
     {
         if (expression == null)
         {
@@ -29,6 +20,19 @@ public static class Evaluator
         for (int i = 0; i < values.Length; i++)
         {
             ChangeValue?.Invoke(IDs[i], values[i]);
+        }
+        return expression.Evaluate();
+    }
+    /// <summary>
+    ///  Evalua una expresion q no tenga variables
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    public double Evaluate()
+    {
+        if (expression == null)
+        {
+            throw new Exception("Expression is not assigned");
         }
         return expression.Evaluate();
     }
