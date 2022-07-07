@@ -113,7 +113,7 @@ public static class Program
         for (int i = 0; i < limits.Length; i++)
         {
             Interpreter interpreter = new();
-            Evaluator evaluator = new(interpreter.GetExpression(interpreter.Parse(limit)), interpreter.IDs);
+            Evaluator evaluator = new(interpreter.GetExpression(interpreter.Parse(limits[i])), interpreter.IDs);
             result[i] = evaluator.Evaluate();
         }
         return result;
