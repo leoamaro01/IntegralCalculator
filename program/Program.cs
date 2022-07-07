@@ -6,6 +6,10 @@ namespace cnsle;
 
 public static class Program
 {
+    const int _precissionIncrementFactor = 5;
+    const double _optimalError = 0.01;
+    const int _midpoints = 2;
+    const int _maxIntervals = 1000000;
     static string function = string.Empty;
     static Interpreter interpreter = new Interpreter();
     static Evaluator? evaluator;
@@ -67,7 +71,7 @@ public static class Program
                 double integral = IntegralCalculator.OptimalCalculate(lower,
                                     higher,
                                     Function,
-                                    ref startingPrecissions, 5, 0.05, 2);
+                                    ref startingPrecissions, optimalError: _optimalError, midpoints: _midpoints, maxIntervals: _maxIntervals, precissionIncrementFactor: _precissionIncrementFactor);
 
                 watch.Stop();
 
@@ -79,6 +83,11 @@ public static class Program
             catch (IntegralException)
             {
                 Console.WriteLine("Invalid function");
+                Thread.Sleep(500);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 Thread.Sleep(500);
             }
         }
@@ -102,21 +111,6 @@ public static class Program
         return result[..^1];
 
 
-    }
-    static Expression SetExpression(double input)
-    {
-        Expression e = new BinaryGeneric(
-            new UnaryGeneric(
-                new Const((double)input),
-                ((x) => (double)Math.Exp((double)x))
-            ),
-            new UnaryGeneric(
-                new Const(input),
-                ((x) => (double)Math.Sin((double)x))
-            ),
-            ((x, y) => x * y)
-        );
-        return e;
     }
     static double[] GetLimit(string limit)
     {
