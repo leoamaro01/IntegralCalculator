@@ -38,38 +38,50 @@ public static class Program
     }
     static void Main(string[] args)
     {
-        PaintMenu();
-        string? read = Request("Introduzca la función a integrar:").ToLower();
-        function = read ?? throw new Exception("Invalid function");
-
-        evaluator = SetEvaluator();
-        string sLower = RequestLimits("Límite inferior:").ToLower();
-        string sHigher = RequestLimits("Límite superior:").ToLower();
-
-        double[] lower = GetLimit(sLower);
-        double[] higher = GetLimit(sHigher);
-        Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
-
-        Stopwatch watch = new();
-        watch.Start();
-
-        IntegralCalculator.optimalDivisionsPerUnit = 10;
-        int[] startingPrecissions = new int[lower.Length];
-        for (int i = 0; i < startingPrecissions.Length; i++)
+        while (true)
         {
-            startingPrecissions[i] = IntegralCalculator.GetOptimalPrecission(Math.Abs(higher[i] - lower[i]));
+            try
+            {
+                PaintMenu();
+                string? read = Request("Introduzca la función a integrar:").ToLower();
+                function = read ?? throw new Exception("Invalid function");
+
+                evaluator = SetEvaluator();
+                string sLower = RequestLimits("Límite inferior:").ToLower();
+                string sHigher = RequestLimits("Límite superior:").ToLower();
+
+                double[] lower = GetLimit(sLower);
+                double[] higher = GetLimit(sHigher);
+                Console.Write($"La integral definida de la funcion {function} entre {sLower} y {sHigher} es: ");
+
+                Stopwatch watch = new();
+                watch.Start();
+
+                IntegralCalculator.optimalDivisionsPerUnit = 10;
+                int[] startingPrecissions = new int[lower.Length];
+                for (int i = 0; i < startingPrecissions.Length; i++)
+                {
+                    startingPrecissions[i] = IntegralCalculator.GetOptimalPrecission(Math.Abs(higher[i] - lower[i]));
+                }
+
+                double integral = IntegralCalculator.OptimalCalculate(lower,
+                                    higher,
+                                    Function,
+                                    ref startingPrecissions, 5, 0.1f, 2);
+
+                watch.Stop();
+
+                Console.WriteLine($"{integral} ~ {Math.Round(integral, 3)}");
+                Console.WriteLine($"Calculado con un total de {startingPrecissions.Aggregate((a, e) => a * e)} intervalos de suma de Riemann.");
+                Console.WriteLine($"Calculado en {watch.ElapsedMilliseconds}ms");
+                return;
+            }
+            catch (IntegralException)
+            {
+                Console.WriteLine("Invalid function");
+                Thread.Sleep(500);
+            }
         }
-
-        double integral = IntegralCalculator.OptimalCalculate(lower,
-                            higher,
-                            Function,
-                            ref startingPrecissions, 5, 0.1f, 2);
-
-        watch.Stop();
-
-        Console.WriteLine($"{integral} ~ {Math.Round(integral, 3)}");
-        Console.WriteLine($"Calculado con un total de {startingPrecissions.Aggregate((a, e) => a * e)} intervalos de suma de Riemann.");
-        Console.WriteLine($"Calculado en {watch.ElapsedMilliseconds}ms");
     }
     static string Request(string query)
     {

@@ -31,23 +31,30 @@ public class Interpreter
     /// <returns>Retorna una función de la forma "operador"(a,b)</returns>
     public string Parse(string function)
     {
-        function = Prepare(function);
-        function = GetParse(function);
-
-        //Parsear cada sustición hecha en el método "Prepare"
-        string[] subsArray = substitutions.ToArray();
-        for (int i = 0; i < subsArray.Length; i++)
+        try
         {
-            subsArray[i] = GetParse(subsArray[i]);
+            function = Prepare(function);
+            function = GetParse(function);
 
-            if (i != 0)
-                subsArray[i] = string.Format(subsArray[i], subsArray[..i]);
+            //Parsear cada sustición hecha en el método "Prepare"
+            string[] subsArray = substitutions.ToArray();
+            for (int i = 0; i < subsArray.Length; i++)
+            {
+                subsArray[i] = GetParse(subsArray[i]);
+
+                if (i != 0)
+                    subsArray[i] = string.Format(subsArray[i], subsArray[..i]);
+            }
+
+            function = string.Format(function, subsArray);
+
+            substitutions.Clear();
+            IDs.Sort();
         }
-
-        function = string.Format(function, subsArray);
-
-        substitutions.Clear();
-
+        catch
+        {
+            throw new IntegralException();
+        }
         return function;
     }
     //Parsea la funcion pasada como parámetro
@@ -198,7 +205,8 @@ public class Interpreter
             double number = -1;
             if (double.TryParse(function, out number))
                 return new Const(number);
-            IDs.Add(function);
+            if (!IDs.Contains(function))
+                IDs.Add(function);
             return new Variable(function);
 
         }

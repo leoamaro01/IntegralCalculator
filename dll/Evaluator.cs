@@ -7,6 +7,7 @@ public class Evaluator
     public static event Action<string, double>? ChangeValue;
     public Evaluator(Expression exp, List<string> IDs)
     {
+        IDs.Sort();
         this.IDs = IDs;
         this.expression = exp;
     }
