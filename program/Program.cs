@@ -63,7 +63,7 @@ public static class Program
         double integral = IntegralCalculator.OptimalCalculate(lower,
                             higher,
                             Function,
-                            ref startingPrecissions, 5, 0.1f, 2);
+                            ref startingPrecissions, 5, 0.01f, 2);
 
         watch.Stop();
 
