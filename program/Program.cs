@@ -85,8 +85,8 @@ public static class Program
         {
             Console.Write($"{interpreter.IDs[i]}: ");
             result += Console.ReadLine() + ",";
-            Console.WriteLine("");
         }
+        Console.WriteLine("");
         return result[..^1];
 
 
