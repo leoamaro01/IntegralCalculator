@@ -21,7 +21,8 @@ public class IntegralCalculator
         ref int[] startingPrecissions,
         int precissionIncrementFactor = 10,
         double optimalError = 0.01,
-        int midpoints = 3
+        int midpoints = 3,
+        int maxIntervals = 1000000
     )
     {
         double tempMidpoint = midpoint;
@@ -38,7 +39,7 @@ public class IntegralCalculator
         }
         bool AreIntegralsWithinError()
         {
-            return (integrals.Max() - integrals.Min()) <= optimalError;
+            return Math.Max(integrals.Max() - integrals.Average(), integrals.Average() - integrals.Min()) <= optimalError;
         }
 
         CalculateIntegrals(startingPrecissions);
@@ -52,7 +53,7 @@ public class IntegralCalculator
 
             CalculateIntegrals(startingPrecissions);
         }
-        while (!AreIntegralsWithinError());
+        while (!AreIntegralsWithinError() && startingPrecissions.Aggregate((e, a) => e * a) < maxIntervals);
 
         midpoint = tempMidpoint;
 
