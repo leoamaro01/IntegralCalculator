@@ -42,7 +42,6 @@ public static class Program
         string? read = Request("Introduzca la función a integrar:").ToLower();
         function = read ?? throw new Exception("Invalid function");
 
-        IntegralCalculator.optimalDivisionsPerUnit = 1000000;
         evaluator = SetEvaluator();
         string sLower = RequestLimits("Límite inferior:").ToLower();
         string sHigher = RequestLimits("Límite superior:").ToLower();
