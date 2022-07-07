@@ -1,7 +1,5 @@
-﻿using System.Linq.Expressions;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using lib;
-using Expression = lib.Expression;
 namespace cnsle;
 
 public static class Program
