@@ -56,4 +56,10 @@ public static class Database
         { "sec", "sec" },
         { "csc", "csc" }
     };
+    public static Dictionary<string, double> constToNumber = new()
+    {
+        {"e",(double)Math.E},
+        {"pi",(double)Math.PI},
+        {"inf",(double)double.PositiveInfinity}
+    };
 }

@@ -7,15 +7,19 @@ namespace cnsle;
 public static class Program
 {
     static string function = string.Empty;
+    static Interpreter interpreter = new Interpreter();
+    static Evaluator? evaluator;
     static double Function(double[] input)
     {
-        return Evaluator.Evaluate(input);
+        if (evaluator == null)
+        {
+            throw new Exception("Expression is not assigned");
+        }
+        return evaluator.Evaluate(input);
     }
-    static void SetEvaluator()
+    static Evaluator SetEvaluator()
     {
-        Evaluator.Reset();
-        Interpreter interpreter = new();
-        Evaluator.SetExpresion(interpreter.GetExpression(interpreter.Parse(function)));
+        return new(interpreter.GetExpression(interpreter.Parse(function)), interpreter.IDs);
     }
     static void PaintMenu()//Imprime la parte de los operadores a utilizar 
     {
@@ -39,9 +43,9 @@ public static class Program
         function = read ?? throw new Exception("Invalid function");
 
         IntegralCalculator.optimalDivisionsPerUnit = 1000000;
-        SetEvaluator();
-        string sLower = Request("Límite inferior:").ToLower();
-        string sHigher = Request("Límite superior:").ToLower();
+        evaluator = SetEvaluator();
+        string sLower = RequestLimits("Límite inferior:").ToLower();
+        string sHigher = RequestLimits("Límite superior:").ToLower();
 
         double[] lower = GetLimit(sLower);
         double[] higher = GetLimit(sHigher);
@@ -77,9 +81,9 @@ public static class Program
     {
         string result = "";
         Console.WriteLine(query);
-        for (int i = 0; i < Evaluator.IDs.Count; i++)
+        for (int i = 0; i < interpreter.IDs.Count; i++)
         {
-            Console.Write($"{Evaluator.IDs[i]}: ");
+            Console.Write($"{interpreter.IDs[i]}: ");
             result += Console.ReadLine() + ",";
             Console.WriteLine("");
         }
@@ -106,29 +110,11 @@ public static class Program
     {
         string[] limits = limit.Split(',');
         double[] result = new double[limits.Length];
-        for (int i = 0; i < result.Length; i++)
+        for (int i = 0; i < limit.Length; i++)
         {
-            switch (limits[i])
-            {
-                case "-inf":
-                    {
-                        result[i] = -(double)(Math.Pow(10, 2));
-                        break;
-                    }
-                case "inf":
-                    {
-                        result[i] = (double)(Math.Pow(10, 2));
-                        break;
-                    }
-                default:
-                    {
-                        if (!double.TryParse(limits[i], out result[i]))
-                        {
-                            throw new Exception("Límite inválido");
-                        }
-                        break;
-                    }
-            }
+            Interpreter interpreter = new();
+            Evaluator evaluator = new(interpreter.GetExpression(interpreter.Parse(limit)), interpreter.IDs);
+            result[i] = evaluator.Evaluate();
         }
         return result;
     }

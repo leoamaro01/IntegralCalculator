@@ -3,8 +3,11 @@ using System.Linq;
 namespace lib;
 public class Interpreter
 {
-    static Interpreter()
-    { }
+    public List<string> IDs;
+    public Interpreter()
+    {
+        IDs = new();
+    }
     #region Parsing
     //Lista de las expresiones contenidas dentro de parentesis en la funcion introducida por el usuario
     List<string> substitutions = new();
@@ -188,18 +191,16 @@ public class Interpreter
         //Si no aparece ningún paréntesis entonces se está conviertiendo una constante
         if (!function.Any(x => x == '('))
         {
-            if (function == "e")
-                return new Const((double)Math.E);
-            if (function == "π")
-                return new Const((double)Math.PI);
+            if (Database.constToNumber.ContainsKey(function))
+            {
+                return new Const(Database.constToNumber[function]);
+            }
             double number = -1;
             if (double.TryParse(function, out number))
                 return new Const(number);
-            else
-            {
-                Evaluator.IDs.Add(function);
-                return new Variable(function);
-            }
+            IDs.Add(function);
+            return new Variable(function);
+
         }
         string oper = "";
         int comaIndex = -1;
