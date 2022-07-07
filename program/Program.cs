@@ -110,7 +110,7 @@ public static class Program
     {
         string[] limits = limit.Split(',');
         double[] result = new double[limits.Length];
-        for (int i = 0; i < limit.Length; i++)
+        for (int i = 0; i < limits.Length; i++)
         {
             Interpreter interpreter = new();
             Evaluator evaluator = new(interpreter.GetExpression(interpreter.Parse(limit)), interpreter.IDs);
